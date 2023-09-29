@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"regexp"
 
 	"github.com/spf13/viper"
 )
@@ -20,7 +21,8 @@ func main() {
 	viper.SetDefault("data-dir", "data")
 
 	app := newApp(&appConfig{
-		dataDir: viper.GetString("data-dir"),
+		dataDir:               viper.GetString("data-dir"),
+		corsAllowOriginRegexp: *regexp.MustCompile("localhost"),
 	})
-	log.Fatal(app.Listen(":" + viper.GetString("port")))
+	log.Fatal(app.Listen("localhost:" + viper.GetString("port")))
 }

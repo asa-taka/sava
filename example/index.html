@@ -1,1 +1,20 @@
-<img src="http://localhost:3000/u/me@example.com/avatar" style="border-radius: 100px;" />
+<head>
+  <title>Sava Demo</title>
+</head>
+<body>
+  <img src="http://localhost:3000/u/me@example.com/avatar" style="border-radius: 100px;" height="200"/>
+  
+  <input id="avatar-input" type="file" />
+  <button id="submit" type="submit">upload</button>
+
+  <script>
+    const input = document.getElementById('avatar-input')
+    const submit = document.getElementById('submit')
+    submit.addEventListener('click', ev => {
+      const file = input.files[0]
+      if (!file) return
+      fetch('http://localhost:3000/u/me@example.com/avatar', { method: 'PUT', body: file })
+        .then(() => window.location.reload())
+    })
+  </script>
+</body>
