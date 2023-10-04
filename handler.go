@@ -56,10 +56,18 @@ func (h *rootHandler) getAvatar(c *fiber.Ctx) error {
 
 func (h *rootHandler) setAvatar(c *fiber.Ctx) error {
 	email := c.Params("email")
+
+	var b []byte
+	if c.Is("application/octet-stream") || c.Is("image") || c.Is("application/x-www-form-urlencoded") {
+		b = c.Body()
+	} else {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
 	if err := h.fs.MkdirAll(userDirPath(email), 0755); err != nil {
 		return err
 	}
-	if err := afero.WriteFile(h.fs, avatarFilePath(email), c.Body(), 0644); err != nil {
+	if err := afero.WriteFile(h.fs, avatarFilePath(email), b, 0644); err != nil {
 		return err
 	}
 	return c.SendStatus(fiber.StatusCreated)
